@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="HulkMVC Framework" tests="11" failures="3" errors="0" time="0.142735004425">
+    <testsuite name="HulkMVC Context Suite" tests="11" failures="3" errors="0" time="0.142735004425">
+      <testsuite name="TestContext" tests="11" failures="3" errors="0" time="0.142735004425">
+        <testcase name="testContextCreation" class="TestContext" time="0.00427103042603"/>
+        <testcase name="testInvalidContextConfig" class="TestContext" time="0.00883603096008"/>
+        <testcase name="testContextFileIncludePath" class="TestContext" time="0.0116951465607"/>
+        <testcase name="testInvalidSchemaLocation" class="TestContext" time="0.0125000476837">
+          <failure message="HulkMVC_Exception_Config expected exception has not been raised." type="PHPUnit_Framework_AssertionFailedError">/home/chalmers/workspace/HulkMVC/test/TestContext.php:119
+</failure>
+        </testcase>
+        <testcase name="testApplicationConfig" class="TestContext" time="0.0185918807983">
+          <failure message="" type="PHPUnit_Framework_ExpectationFailedException">/home/chalmers/workspace/HulkMVC/test/TestContext.php:140
+</failure>
+        </testcase>
+        <testcase name="testDatabaseConfig" class="TestContext" time="0.0192930698395"/>
+        <testcase name="testDefaultSessionConfig" class="TestContext" time="0.0166299343109"/>
+        <testcase name="testFileSessionConfig" class="TestContext" time="0.0173230171204">
+          <failure message="" type="PHPUnit_Framework_ExpectationFailedException">/home/chalmers/workspace/HulkMVC/test/TestContext.php:201
+</failure>
+        </testcase>
+        <testcase name="testDBSessionConfig" class="TestContext" time="0.0169389247894"/>
+        <testcase name="testInvalidSessionSecurityConfig" class="TestContext" time="0.00821590423584"/>
+        <testcase name="testInvalidSessionTimeoutConfig" class="TestContext" time="0.0084400177002"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

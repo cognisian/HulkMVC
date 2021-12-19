@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application name="HulkMVC" version="1.0"
+                    xmlns="http://www.superintendent.ca/Context"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="../../libs/HulkMVC/config/context.xsd" >
+
+    <php_version>5.2</php_version>
+    <debug>true</debug>
+
+    <web_root>http://localhost</web_root>
+    <app_root>/home/www/localhost/htdocs/example</app_root>
+
+    <includes />
+    
+    <database ext="pdo" driver="mysql">
+        <host>localhost</host>
+        <schema>GWCollageDB</schema>
+        <query_user>
+            <username>reader</username>
+            <password></password>
+        </query_user>
+        <update_user>
+            <username>chalmers</username>
+            <password>hangHim69</password>
+        </update_user>
+    </database>
+    
+    <logging>
+        <log_file>
+            <filename>log/errors.log</filename>
+        </log_file>
+        <log_db>
+            <filename>log/errors.db</filename>
+        </log_db>
+    </logging>
+    
+    <controllers>
+        <controller path="/TestController" name="Test" />        
+    </controllers>
+
+</application>

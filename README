@@ -1,0 +1,3 @@
+An old PHP 5 library written to implement the MVC design pattern to 
+securly serve PHP.  Wanted to avoid using large/heavy libraries like 
+Symfony or content servers like WordPress.

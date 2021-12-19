@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application name="example" version="1.0"
+                    xmlns="http://www.superintendent.ca/Context" >
+                    
+    <php_version>5.2</php_version>
+    <debug>true</debug>
+    <web_root>http://localhost</web_root>
+    <app_root>/home/www/localhost/htdocs/apps/</app_root>
+    <includes>
+        <include>/tmp/</include>
+    </includes>
+    <database ext="pdo" driver="mysql">
+        <host>localhost</host>
+        <schema>GWCollageDB</schema>
+        <query_user>
+            <username>reader</username>
+            <password></password>
+        </query_user>
+        <update_user>
+            <username>chalmers</username>
+            <password>hangHim69</password>
+        </update_user>
+    </database>
+    <session handler="db" security="strict" timeout="60">
+        <session_user>
+            <username>session</username>
+            <password>session</password>
+        </session_user>
+    </session>
+    <template type="HulkMVC">
+        <config>templates/conf/</config>
+        <cache>templates/cache/</cache>
+        <templates>templates/</templates>
+        <templates_c>templates/compile/</templates_c>
+    </template>
+    <logging>
+        <log_file>
+            <filename>log/errors.log</filename>
+        </log_file>
+        <log_db>
+            <filename>log/errors.db</filename>
+        </log_db>
+    </logging>
+    <controllers>
+        <controller path="/TestController" name="Test" >
+            <mime_types>
+                <mime_type>text/html</mime_type>
+                <mime_type>text/xml</mime_type>
+            </mime_types>
+            <filters>
+                <filter>HulkMVC_Filter_Authenticate</filter>
+                <filter>HulkMVC_Filter_Session</filter>
+            </filters>
+        </controller>
+    </controllers>
+</application>

@@ -1,0 +1,20 @@
+1..11
+# TestSuite "HulkMVC Framework" started.
+1..11
+# TestSuite "HulkMVC Context Suite" started.
+1..11
+# TestSuite "TestContext" started.
+ok 1 - testContextCreation(TestContext)
+ok 2 - testInvalidContextConfig(TestContext)
+ok 3 - testContextFileIncludePath(TestContext)
+not ok 4 - Failure: testInvalidSchemaLocation(TestContext)
+not ok 5 - Failure: testApplicationConfig(TestContext)
+ok 6 - testDatabaseConfig(TestContext)
+ok 7 - testDefaultSessionConfig(TestContext)
+not ok 8 - Failure: testFileSessionConfig(TestContext)
+ok 9 - testDBSessionConfig(TestContext)
+ok 10 - testInvalidSessionSecurityConfig(TestContext)
+ok 11 - testInvalidSessionTimeoutConfig(TestContext)
+# TestSuite "TestContext" ended.
+# TestSuite "HulkMVC Context Suite" ended.
+# TestSuite "HulkMVC Framework" ended.

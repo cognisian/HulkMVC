@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.superintendent.ca/Context"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        xmlns:ctxt="http://www.superintendent.ca/Context"
+                        elementFormDefault="qualified">
+
+    <xsd:annotation>
+        <xsd:documentation xml:lang="en">
+            HulkMVC Context schema
+            This schema is used to to define the available settings and options that
+            can be set and used throughout a web application.
+            Copyright 2006 Sean Chalmers. All rights reserved.
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <!-- The elements defining the web application context -->
+    <xsd:element name="application">
+        <xsd:complexType>
+
+            <xsd:sequence>
+
+                <xsd:element name="php_version" type="xsd:string" />
+
+                <xsd:element name="debug" type="xsd:boolean" />
+
+                <xsd:element name="web_root" type="ctxt:httpURIType" />
+                <xsd:element name="app_root" type="xsd:string" />
+                <xsd:element name="context_root" type="xsd:string" />
+                
+                <xsd:element name="includes" type="ctxt:Paths" />
+                
+                <xsd:element name="database" type="ctxt:DatabaseType" />
+
+                <xsd:element name="session" type="ctxt:SessionType" minOccurs="0"/>
+                <xsd:element name="template" type="ctxt:TemplateType" minOccurs="0" />
+                
+                <xsd:element name="logging" type="ctxt:LoggerType" />
+                
+                <xsd:element name="controllers" type="ctxt:ControllersType" />
+            </xsd:sequence>
+
+            <xsd:attribute name="name" use="required" type="xsd:string" />
+            <xsd:attribute name="version" use="required" type="xsd:string" />
+
+        </xsd:complexType>
+    </xsd:element>
+
+    <!-- Create type which limits URI to only HTTP -->
+    <xsd:simpleType name="httpURIType">
+        <xsd:restriction base="xsd:anyURI">
+            <xsd:pattern value="http://.+" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!-- Create the ability to add 0 or more paths to include path  -->
+    <xsd:complexType name="Paths">
+        <xsd:sequence>
+            <xsd:element name="include" type="ctxt:Path" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <!-- Create filter for file paths -->
+    <xsd:simpleType name="Path">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1" />
+            <xsd:pattern value="/?([a-zA-Z\d_]+/)*" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <!-- DATABASE TYPES -->
+
+    <!-- Create type which specifies DB connection parameters -->
+    <xsd:complexType name="DatabaseType">
+        <xsd:sequence>
+            <xsd:element name="host" type="xsd:string" />
+            <xsd:element name="schema" type="xsd:string" />
+            <xsd:element name="query_user" type="ctxt:UserType" />
+            <xsd:element name="update_user" type="ctxt:UserType" />
+        </xsd:sequence>
+        <xsd:attribute name="ext" use="required" type="ctxt:DatabaseExtType" />
+        <xsd:attribute name="driver" use="required" type="ctxt:DatabaseDriverType" />
+    </xsd:complexType>
+
+    <!-- Constrain the PHP database extension  -->
+    <xsd:simpleType name="DatabaseExtType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="native"/>
+            <xsd:enumeration value="pdo"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!-- Constrain the available database drivers -->
+    <xsd:simpleType name="DatabaseDriverType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="mysql"/>
+            <xsd:enumeration value="postgre"/>
+            <xsd:enumeration value="sqlite"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!-- Database subtype encapsulating DB logon information -->
+    <xsd:complexType name="UserType">
+        <xsd:sequence>
+            <xsd:element name="username" type="xsd:string" />
+            <xsd:element name="password" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- SESSION TYPE -->
+    
+    <xsd:complexType name="SessionType">
+        <xsd:choice>
+            <!-- If the session handler is 'db' then define a username/password who has
+                   read/write privledges on the session table in the schema defined in 
+                   the 'database' tag -->
+            <xsd:element name="session_user" type="ctxt:UserType" minOccurs="0" />
+            
+            <!-- if the session handler is 'file' then define the file which will be located
+                   relative to the 'app_root' tag and prefixed with 'sess_' -->
+            <xsd:element name="directory" type="xsd:string" minOccurs="0" />
+        </xsd:choice>
+        <xsd:attribute name="handler" type="ctxt:SessHandlerType" default="file" />
+        <xsd:attribute name="security" type="ctxt:SessSecurityType" default="permissive" />
+        <xsd:attribute name="timeout" type="xsd:nonNegativeInteger" default="0" />
+    </xsd:complexType>
+    
+    <xsd:simpleType name="SessHandlerType" >
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="file" />
+            <xsd:enumeration value="db" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="SessSecurityType" >
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="permissive" />
+            <xsd:enumeration value="strict" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <!-- TEMPLATE TYPE -->
+    <xsd:complexType name="TemplateType">
+        <xsd:sequence>
+            <!-- Set of paths used by tempalting system and all relative to 
+            path set in 'app_root' tag -->
+            <xsd:element name="config" type="ctxt:Path" minOccurs="0" />
+            <xsd:element name="cache" type="ctxt:Path" />
+            <xsd:element name="templates" type="ctxt:Path" />
+            <xsd:element name="templates_c" type="ctxt:Path" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="type" type="ctxt:TemplateSysType" default="HulkMVC" use="optional" />
+    </xsd:complexType>
+    
+    <xsd:simpleType name="TemplateSysType" >
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="HulkMVC" />
+            <xsd:enumeration value="Smarty" />
+            <xsd:enumeration value="Savant2" />
+            <xsd:enumeration value="Savant3" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <!-- LOGGER TYPES -->
+
+    <xsd:complexType name="LoggerType">
+        <xsd:sequence>
+            <xsd:element name="log_file" type="ctxt:LogFileType" minOccurs="0" />
+            <xsd:element name="log_db" type="ctxt:LogSqliteType" minOccurs="0" />
+            <xsd:element name="log_win" type="ctxt:LogWindowType" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- LogFileType -->
+    <xsd:complexType name="LogFileType">
+        <xsd:sequence>
+            <xsd:element name="filename" type="xsd:string" />
+            <xsd:element name="append" type="xsd:boolean" default="true" minOccurs="0" />
+            <xsd:element name="mode" type="ctxt:OctalType" default="0644" minOccurs="0"/>
+            <xsd:element name="lineFormat" type="xsd:string" default="%1$s %2$s [%3$s] %4$s" minOccurs="0"/>
+            <xsd:element name="timeFormat" type="xsd:string" default="%b %d %H:%M:%S" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- LogSqliteType -->
+    <xsd:complexType name="LogSqliteType">
+        <xsd:sequence>
+            <xsd:element name="filename" type="xsd:string" />
+            <xsd:element name="mode" type="ctxt:OctalType" default="0644" minOccurs="0"/>
+            <xsd:element name="persistent" type="xsd:boolean" default="false" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- LogWindowType -->
+    <xsd:complexType name="LogWindowType">
+        <xsd:sequence>
+            <xsd:element name="title" type="xsd:string" />
+            <xsd:element name="colors" type="ctxt:RGB" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <!-- Defines a type for RGB colour definition in RGB order -->
+    <xsd:simpleType name="RGBComponent">
+        <xsd:restriction base="xsd:positiveInteger">
+            <xsd:maxInclusive value="255" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="RGB">
+        <xsd:union memberTypes="ctxt:RGBComponent ctxt:RGBComponent ctxt:RGBComponent"/>
+    </xsd:simpleType>
+    
+    <!-- LogSyslogType -->
+    <xsd:complexType name="LogSyslogType">
+        <xsd:sequence>
+            <xsd:element name="user" type="xsd:integer" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:simpleType name="OctalType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="0[0-7]{3}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <!--CONTROLLER TYPE -->
+
+    <xsd:complexType name="ControllersType">
+        <xsd:sequence>
+            <xsd:element name="controller" type="ctxt:ControllerType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ControllerType">
+        <xsd:sequence>
+            <xsd:element name="mime_types" type="ctxt:MimesType" minOccurs="0" />
+            <xsd:element name="filters" type="ctxt:FiltersType" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="path" use="required" type="xsd:string" />
+        <xsd:attribute name="name" use="required" type="xsd:string" />
+    </xsd:complexType>
+    
+    <!-- Filter Types  -->
+    <xsd:complexType name="FiltersType">
+        <xsd:sequence>
+            <xsd:element name="filter" type="xsd:string" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <!-- MIME Types -->
+    <xsd:complexType name="MimesType">
+        <xsd:sequence>
+            <xsd:element name="mime_type" type="xsd:string" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+</xsd:schema>
